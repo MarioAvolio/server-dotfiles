@@ -22,6 +22,9 @@ This repository contains a collection of dotfiles and automation scripts tailore
 4. [**Install Server Packages**](./install_server_packages.sh):
    This script installs essential server packages such as SSH, UFW, fail2ban, wget, curl, git, nano, and more on Debian.
 
+5. [**Setup Console Blank**](./setup_console_blank.sh):
+   Creates a systemd service to enable virtual console blanking on Debian.
+
 ## Usage
 
 1. Clone this repository to your Debian server:
