@@ -10,7 +10,7 @@ sudo apt install -y transmission-daemon
 sudo systemctl stop transmission-daemon
 
 # Set your desired username and password
-username="your_username"
+username=$(whoami)
 password="your_password"
 
 # Configure Transmission settings
