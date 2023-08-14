@@ -32,11 +32,12 @@ sudo journalctl --vacuum-time=7d
 echo 'Server cleaning completed.'
 "
 
-# Create the cleaning script
-echo "$CLEAN_SCRIPT_CONTENT" > clean_server.sh
-chmod +x clean_server.sh
+# Create the cleaning script in the user's home folder
+CLEAN_SCRIPT_PATH="$HOME/clean_server.sh"
+echo "$CLEAN_SCRIPT_CONTENT" > "$CLEAN_SCRIPT_PATH"
+chmod +x "$CLEAN_SCRIPT_PATH"
 
 # Add cron job to run the cleaning script daily at 3:00 AM
-(crontab -l 2>/dev/null; echo "0 3 * * * $(pwd)/clean_server.sh") | crontab -
+(crontab -l 2>/dev/null; echo "0 3 * * * $CLEAN_SCRIPT_PATH") | crontab -
 
 echo "Automatic server cleaning script and cron job configured."
