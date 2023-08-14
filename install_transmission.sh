@@ -9,13 +9,17 @@ sudo apt install -y transmission-daemon
 # Stop the Transmission service
 sudo systemctl stop transmission-daemon
 
+# Set your desired username and password
+username="your_username"
+password="your_password"
+
 # Configure Transmission settings
 sudo sed -i 's/"rpc-authentication-required".*/"rpc-authentication-required": true,/' /etc/transmission-daemon/settings.json
-sudo sed -i 's/"rpc-username".*/"rpc-username": "your_username",/' /etc/transmission-daemon/settings.json
-sudo sed -i 's/"rpc-password".*/"rpc-password": "your_password",/' /etc/transmission-daemon/settings.json
+sudo sed -i 's/"rpc-username".*/"rpc-username": "'$username'",/' /etc/transmission-daemon/settings.json
+sudo sed -i 's/"rpc-password".*/"rpc-password": "'$password'",/' /etc/transmission-daemon/settings.json
 
 # Change ownership of Transmission's download directory
-sudo chown -R your_username: /var/lib/transmission-daemon/downloads
+sudo chown -R $username: /var/lib/transmission-daemon/downloads
 
 # Start the Transmission service
 sudo systemctl start transmission-daemon
