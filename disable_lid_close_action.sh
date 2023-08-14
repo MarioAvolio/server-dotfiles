@@ -1,14 +1,15 @@
 #!/bin/bash
 
 # Check if HandleLidSwitch is set to ignore in logind.conf
-if grep -q '^HandleLidSwitch=ignore' /etc/systemd/logind.conf; then
-    echo "Laptop lid close action is already configured to do nothing."
+if grep -q '^[[:space:]]*#*[[:space:]]*HandleLidSwitch=.*' /etc/systemd/logind.conf; then
+    # Remove any comment and add HandleLidSwitch=ignore
+    sudo sed -i 's/^[[:space:]]*#*[[:space:]]*HandleLidSwitch=.*/HandleLidSwitch=ignore/' /etc/systemd/logind.conf
 else
-    # Add or update HandleLidSwitch to ignore in logind.conf
-    sudo sed -i '/^#*HandleLidSwitch=/s/=.*/=ignore/' /etc/systemd/logind.conf
-
-    # Restart the systemd daemon to apply the changes
-    sudo systemctl restart systemd-logind
-
-    echo "Laptop lid close action configured to do nothing."
+    # Add HandleLidSwitch=ignore to logind.conf
+    echo "HandleLidSwitch=ignore" | sudo tee -a /etc/systemd/logind.conf
 fi
+
+# Restart the systemd daemon to apply the changes
+sudo systemctl restart systemd-logind
+
+echo "Laptop lid close action configured to do nothing."
