@@ -6,8 +6,29 @@
 # To uninstall the automatic server cleaning: sudo ./setup_cleaning.sh uninstall_cleaning
 # Please review and understand the script before using it, and consider backing up your system before making significant changes.
 
+# With this script, the default secure folder path is set to $HOME/secure_cleaning. You can provide a different folder path as an argument when running the script, like this:
+
+# sudo ./setup_cleaning.sh install_cleaning /path/to/your/secure/folder
+
+
+# If no folder path is provided, the script will use the default folder path.
+# This script will create the specified secure folder if it doesn't exist before creating the cleaning script inside it.
+
+
+
+
+
 # Set the default secure folder path
 DEFAULT_FOLDER_PATH="$HOME/secure_cleaning"
+
+# Function to create the secure folder if it doesn't exist
+create_secure_folder() {
+    folder_path="$1"
+    if [[ ! -d "$folder_path" ]]; then
+        mkdir -p "$folder_path"
+        echo "Created secure folder: $folder_path"
+    fi
+}
 
 # Function to install automatic server cleaning
 install_cleaning() {
@@ -15,6 +36,8 @@ install_cleaning() {
     if [[ -z "$folder_path" ]]; then
         folder_path="$DEFAULT_FOLDER_PATH"
     fi
+
+    create_secure_folder "$folder_path"
 
     # Cleaning script content
     CLEAN_SCRIPT_CONTENT="
