@@ -21,7 +21,5 @@ echo "All scripts in '$folder_path' are now executable."
 
 # Save this script to a file (e.g., make_scripts_executable.sh), make it executable (chmod +x make_scripts_executable.sh), and then run it with the path to the folder containing your scripts:
 
-# bash
-# Copy code
 # ./make_scripts_executable.sh /path/to/your/scripts/folder
 # This script will find all files with a .sh extension in the specified folder and make them executable using chmod +x. Make sure to replace /path/to/your/scripts/folder with the actual path to your scripts folder.
