@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Save this script in a file named install_vsftpd.sh, make it executable using chmod +x install_vsftpd.sh, and then run it with elevated privileges using sudo ./install_vsftpd.sh.
+# Save the script to a file, for example, configure_ftp_tls.sh, make it executable using chmod +x configure_ftp_tls.sh, and then run it with elevated privileges using sudo ./configure_ftp_tls.sh.
 
-# Please make sure to review the script before running it to ensure it aligns with your intentions and configurations. Once the script completes, you should be able to connect to your FTP server using the specified ports and configuration settings.
+# This script will install vsftpd, configure it with the provided vsftpd.conf settings and FTP over TLS, and configure the firewall rules accordingly.
 
 # Update package lists
 sudo apt update
@@ -17,7 +17,6 @@ cat <<EOT | sudo tee /etc/vsftpd.conf
 listen=YES
 listen_ipv6=NO
 anonymous_enable=NO
-allow_writeable_chroot=NO
 local_enable=YES
 write_enable=YES
 local_umask=022
@@ -33,7 +32,20 @@ pasv_min_port=40000
 pasv_max_port=40100
 EOT
 
-# Restart vsftpd
+# Generate SSL certificate
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.pem
+
+# Set permissions for the SSL certificate
+sudo chmod 600 /etc/ssl/private/vsftpd.pem
+
+# Configure vsftpd to use SSL
+sudo sed -i 's/ssl=NO/ssl=YES/' /etc/vsftpd.conf
+sudo sed -i 's/rsa_cert_file/#rsa_cert_file/' /etc/vsftpd.conf
+sudo sed -i 's/rsa_private_key/#rsa_private_key/' /etc/vsftpd.conf
+echo "rsa_cert_file=/etc/ssl/private/vsftpd.pem" | sudo tee -a /etc/vsftpd.conf
+echo "rsa_private_key_file=/etc/ssl/private/vsftpd.pem" | sudo tee -a /etc/vsftpd.conf
+
+# Restart vsftpd service
 sudo systemctl restart vsftpd
 
 # Configure Firewall (UFW)
@@ -42,4 +54,4 @@ sudo ufw allow 21/tcp
 sudo ufw allow 40000:40100/tcp
 sudo ufw reload
 
-echo "vsftpd installation and configuration completed successfully."
+echo "vsftpd installation and configuration with FTP over TLS completed successfully."
