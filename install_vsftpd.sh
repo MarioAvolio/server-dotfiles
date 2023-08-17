@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Save this script in a file named install_vsftpd.sh, make it executable using chmod +x install_vsftpd.sh, and then run it with elevated privileges using sudo ./install_vsftpd.sh.
+
+# Please make sure to review the script before running it to ensure it aligns with your intentions and configurations. Once the script completes, you should be able to connect to your FTP server using the specified ports and configuration settings.
+
 # Update package lists
 sudo apt update
 
