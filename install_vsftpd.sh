@@ -17,6 +17,7 @@ cat <<EOT | sudo tee /etc/vsftpd.conf
 listen=YES
 listen_ipv6=NO
 anonymous_enable=NO
+allow_writeable_chroot=NO
 local_enable=YES
 write_enable=YES
 local_umask=022
