@@ -18,6 +18,7 @@ listen=YES
 listen_ipv6=NO
 anonymous_enable=NO
 local_enable=YES
+allow_writeable_chroot=YES
 write_enable=YES
 local_umask=022
 dirmessage_enable=YES
