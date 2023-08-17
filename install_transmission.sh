@@ -1,8 +1,9 @@
 #!/bin/bash
 
-# Set your desired username and password
-username=$(whoami)
-password="your_password"
+# Prompt for the desired username and password
+read -p "Enter the username for Transmission: " username
+read -s -p "Enter the password for Transmission: " password
+echo
 
 # Update package lists
 sudo apt update
@@ -13,19 +14,25 @@ sudo apt install -y transmission-daemon
 # Stop the Transmission service
 sudo systemctl stop transmission-daemon
 
-# Configure Transmission settings
-sudo sed -i 's/"rpc-authentication-required".*/"rpc-authentication-required": true,/' /etc/transmission-daemon/settings.json
-sudo sed -i 's/"rpc-username".*/"rpc-username": "'$username'",/' /etc/transmission-daemon/settings.json
-sudo sed -i 's/"rpc-password".*/"rpc-password": "'$password'",/' /etc/transmission-daemon/settings.json
-sudo sed -i '/"rpc-authentication-required".*/a "rpc-whitelist": "127.0.0.1,192.168.*.*",' /etc/transmission-daemon/settings.json
+# Transmission settings configuration
+transmission_settings="
+{
+  \"rpc-authentication-required\": true,
+  \"rpc-username\": \"$username\",
+  \"rpc-password\": \"$password\",
+  \"rpc-whitelist\": \"127.0.0.1,192.168.*.*\"
+}"
+echo "$transmission_settings" | sudo tee /etc/transmission-daemon/settings.json
 
-# Change ownership of Transmission's download directory
-sudo chown -R $username: /var/lib/transmission-daemon/downloads
+# Add the user to the "debian-transmission" group
+sudo usermod -aG debian-transmission $username
 
-# Start the Transmission service
+# Change ownership and permissions for the downloads directory
+sudo chown -R debian-transmission:debian-transmission /var/lib/transmission-daemon/downloads
+sudo chmod -R 755 /var/lib/transmission-daemon/downloads
+
+# Start and enable the Transmission service
 sudo systemctl start transmission-daemon
-
-# Enable Transmission service to start at boot
 sudo systemctl enable transmission-daemon
 
 echo "Transmission server installation and setup completed successfully."
